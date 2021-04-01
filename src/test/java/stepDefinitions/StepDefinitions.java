@@ -1,6 +1,9 @@
 package stepDefinitions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,52 +16,65 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class StepDefinitions {
+	private String url = "https://login.mailchimp.com/signup/";
+	private String randomText;
 	private WebDriver driver;
-	private WebElement email;
-	private WebElement username;
-	private WebElement password;
-	private WebElement submitButton;
-	
+	private WebElement emailElement;
+	private WebElement usernameElement;
+	private WebElement passwordElement;
+	private WebElement submitButtonElement;
+
 	@Before
 	public void initiateChromeDriverBefore() {
 		System.setProperty("webdriver.chrome.driver", "chromedriver");
 
 	    driver = new ChromeDriver();
+	    
+	    Random rand = new Random();
+	    
+	    randomText = Integer.toString(rand.nextInt(Integer.MAX_VALUE));
 	}
 	
-	@Given("I am on the https:\\/\\/login.mailchimp.com\\/signup\\/")
-	public void i_am_on_the_https_login_mailchimp_com_signup() {
-		driver.get("https://login.mailchimp.com/signup/");
+	@Given("I am on the registration page")
+	public void i_am_on_the_registration_page() {
+		driver.get(url);
 	}
 
 	@When("I have written {string} inside the email input-field")
 	public void i_have_written_inside_the_email_input_field(String string) {
-		email = driver.findElement(By.id("email"));
-		email.sendKeys(string);
+		String email = string + randomText + "@gmail.com";
+		
+		emailElement = driver.findElement(By.id("email"));
+		emailElement.sendKeys(email);
 	}
 
 	@When("I have written {string} inside the username input-field")
 	public void i_have_written_inside_the_username_input_field(String string) {
-		username = driver.findElement(By.id("new_username"));
-		username.sendKeys(string);
+		String username = string + randomText;
+		
+		usernameElement = driver.findElement(By.id("new_username"));
+		usernameElement.sendKeys(username);
 	}
 
 	@When("I have written {string} inside the password input-field")
 	public void i_have_written_inside_the_password_input_field(String string) {
-		password = driver.findElement(By.id("new_password"));
-		password.sendKeys(string);
+		passwordElement = driver.findElement(By.id("new_password"));
+		passwordElement.sendKeys(string);
 	}
 
 	@When("I click the Sign Up button")
 	public void i_click_the_sign_up_button() {
-		submitButton = driver.findElement(By.id("create-account"));
-		submitButton.submit();
+		submitButtonElement = driver.findElement(By.id("create-account"));
+		submitButtonElement.submit();
 	}
 
 	@Then("I get redirected to another page")
 	public void i_get_redirected_to_another_page() {
-		assertEquals(true, true);
-		driver.close();
+		String currentUrl = driver.getCurrentUrl();
+		
+		assertNotEquals(url, currentUrl);
+
+		driver.quit();
 	}
 
 }

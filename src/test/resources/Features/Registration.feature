@@ -6,7 +6,7 @@ I need to register an account
 @Before
 
 Scenario Outline: Register a new user
-Given I am on the <registration_page> 
+Given I am on the registration page 
 When I have written <email> inside the email input-field
 And I have written <username> inside the username input-field
 And I have written <password> inside the password input-field
@@ -15,6 +15,6 @@ And I click the Sign Up button
 Then I get redirected to another page
 
 Examples:
-    | registration_page                   | email | username | password |
-    | https://login.mailchimp.com/signup/ | ""    |   "" 		 |   ""     |
-    | https://login.mailchimp.com/signup/ | ""    |   ""     |   ""     |
+    | email  | username | password        |
+    | "john" | "john"   | "TestExample1!" |
+    | "eve"  | "eve"    | "TestExample1!" |
