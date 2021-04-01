@@ -13,7 +13,3 @@ When I have filled up the following
 | <Email> | <Username> | <Password> | 
 And I click the Sign Up button
 Then I get redirected to another page # The new page asks the user to confirm their email through their inbox.
-
-Examples: 
-| Email | Username | Password |
-
