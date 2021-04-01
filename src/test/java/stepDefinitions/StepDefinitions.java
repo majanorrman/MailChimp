@@ -11,8 +11,20 @@ public class StepDefinitions {
 		throw new io.cucumber.java.PendingException();
 	}
 
-	@When("I have written the {string} in its input-field")
-	public void i_have_written_the_in_its_input_field(String string1) {
+	@When("I have written {string} inside the email input-field")
+	public void i_have_written_inside_the_email_input_field(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I have written {string} inside the username input-field")
+	public void i_have_written_inside_the_username_input_field(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		throw new io.cucumber.java.PendingException();
+	}
+
+	@When("I have written {string} inside the password input-field")
+	public void i_have_written_inside_the_password_input_field(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		throw new io.cucumber.java.PendingException();
 	}
@@ -23,8 +35,8 @@ public class StepDefinitions {
 		throw new io.cucumber.java.PendingException();
 	}
 
-	@Then("I get redirected to another page # The new page asks the user to confirm their email through their inbox.")
-	public void i_get_redirected_to_another_page_the_new_page_asks_the_user_to_confirm_their_email_through_their_inbox() {
+	@Then("I get redirected to another page")
+	public void i_get_redirected_to_another_page() {
 		// Write code here that turns the phrase above into concrete actions
 		throw new io.cucumber.java.PendingException();
 	}
