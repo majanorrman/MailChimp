@@ -13,5 +13,5 @@ Then I get redirected to another page # The new page asks the user to confirm th
 
 Examples:
     | registration_page                   | email | username | password |
-    | https://login.mailchimp.com/signup/ | 12    |   5 		 |    7     |
-    | https://login.mailchimp.com/signup/ | 20    |   5      |   15     |
+    | https://login.mailchimp.com/signup/ | ""    |   "" 		 |   ""     |
+    | https://login.mailchimp.com/signup/ | ""    |   ""     |   ""     |
