@@ -3,6 +3,8 @@ In order to use the application
 As a new user
 I need to register an account
 
+@Before
+
 Scenario Outline: Register a new user
 Given I am on the <registration_page> 
 When I have written <email> inside the email input-field
