@@ -47,7 +47,7 @@ public class StepDefinitions {
 	@When("I have written {string} inside the email input-field with {int} random characters")
 	public void i_have_written_inside_the_email_input_field_with_random_characters(String emailString,
 			Integer randomLength) {
-		String email = emailString + randomGenerator.getRandomString(randomLength) + "@gmail.com";
+		String email = randomGenerator.getRandomString(randomLength) + emailString;
 
 		emailElement = driver.findElement(By.id("email"));
 		emailElement.sendKeys(email);
@@ -56,7 +56,7 @@ public class StepDefinitions {
 	@When("I have written {string} inside the username input-field {int} random characters")
 	public void i_have_written_inside_the_username_input_field_random_characters(String usernameString,
 			Integer randomLength) {
-		String username = usernameString + randomGenerator.getRandomString(randomLength);
+		String username = randomGenerator.getRandomString(randomLength) + usernameString;
 
 		usernameElement = driver.findElement(By.id("new_username"));
 		usernameElement.sendKeys(username);
@@ -87,6 +87,15 @@ public class StepDefinitions {
 		validationError = driver.findElement(By.className("invalid-error"));
 
 		boolean hasValidationError = validationError.getText().equals("Enter a value less than 100 characters long");
+
+		assertEquals(hasValidationError, true);
+	}
+	
+	@Then("I get a validation error that says that the email is missing")
+	public void i_get_a_validation_error_that_says_that_the_email_is_missing() {
+		validationError = driver.findElement(By.className("invalid-error"));
+
+		boolean hasValidationError = validationError.getText().equals("Please enter a value");
 
 		assertEquals(hasValidationError, true);
 	}

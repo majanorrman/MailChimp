@@ -13,9 +13,9 @@ And I click the Sign Up button
 Then I get redirected to another page
 
 Examples:
-    | email  | randomLength | username | password        |
-    | "john" | 20           | "john"   | "TestExample1!" |
-    | "eve"  | 20           | "eve"    | "TestExample1!" |
+    | email  	         | randomLength | username | password        |
+    | "john@gmail.com" | 20           | "john"   | "TestExample1!" |
+    | "eve@gmail.com"  | 20           | "eve"    | "TestExample1!" |
     
 Scenario Outline: Get username validation error
 Given I am on the registration page 
@@ -27,5 +27,19 @@ Then I get a validation error that says that the username is too long
 
 Examples:
     | email  | randomLength | username | password        |
-    | "john" | 100          | "john"   | "TestExample1!" |
-    | "eve"  | 101          | "eve"    | "TestExample1!" |
+    | "john@gmail.com" | 100          | "john"   | "TestExample1!" |
+    | "eve@gmail.com"  | 101          | "eve"    | "TestExample1!" |
+
+
+Scenario Outline: Get email validation error
+Given I am on the registration page 
+When I have written <email> inside the email input-field with <randomLength> random characters
+And I have written <username> inside the username input-field <randomLength> random characters
+And I have written <password> inside the password input-field <randomLength> random characters
+And I click the Sign Up button
+Then I get a validation error that says that the email is missing
+
+Examples:
+    | email  | randomLength | username | password        |
+    | ""     | 0          | "john"   | "TestExample1!" |
+    | ""     | 0          | "eve"    | "TestExample1!" |
