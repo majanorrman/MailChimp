@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import generators.RandomGenerator;
 import io.cucumber.java.After;
@@ -18,20 +20,16 @@ public class StepDefinitions {
 	RandomGenerator randomGenerator = new RandomGenerator();
 	private String url = "https://login.mailchimp.com/signup";
 	private String urlSuccess = "https://login.mailchimp.com/signup/success";
+	private WebDriverWait wait;
 	private WebDriver driver;
-	private WebElement emailElement;
-	private WebElement usernameElement;
-	private WebElement passwordElement;
-	private WebElement submitButtonElement;
-	private WebElement validationError;
-
+	
 	@Before
 	public void before() {
 		System.setProperty("webdriver.chrome.driver", "chromedriver");
 
 		driver = new ChromeDriver();
-
-		RandomGenerator randomGenerator = new RandomGenerator();
+		
+		wait = new WebDriverWait(driver, 20);
 	}
 
 	@After
@@ -47,56 +45,94 @@ public class StepDefinitions {
 	@When("I have written {string} inside the email input-field with {int} random characters")
 	public void i_have_written_inside_the_email_input_field_with_random_characters(String emailString,
 			Integer randomLength) {
-		String email = randomGenerator.getRandomString(randomLength) + emailString;
+		String email = "";
+		
+		if (emailString.length() > 0)
+			email = randomGenerator.getRandomString(randomLength) + emailString;
 
-		emailElement = driver.findElement(By.id("email"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("email")));
+		
+		WebElement emailElement = driver.findElement(By.id("email"));
 		emailElement.sendKeys(email);
 	}
 
 	@When("I have written {string} inside the username input-field {int} random characters")
 	public void i_have_written_inside_the_username_input_field_random_characters(String usernameString,
 			Integer randomLength) {
-		String username = randomGenerator.getRandomString(randomLength) + usernameString;
+		String username = "";
+		
+		if (usernameString.length() > 0)
+			username = randomGenerator.getRandomString(randomLength) + usernameString;
 
-		usernameElement = driver.findElement(By.id("new_username"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("new_username")));
+		
+		WebElement usernameElement = driver.findElement(By.id("new_username"));
 		usernameElement.sendKeys(username);
 	}
 
 	@When("I have written {string} inside the password input-field {int} random characters")
 	public void i_have_written_inside_the_password_input_field_random_characters(String passwordString,
 			Integer randomLength) {
-		passwordElement = driver.findElement(By.id("new_password"));
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("new_password")));
+		
+		WebElement passwordElement = driver.findElement(By.id("new_password"));
 		passwordElement.sendKeys(passwordString);
 	}
 
 	@When("I click the Sign Up button")
 	public void i_click_the_sign_up_button() {
-		submitButtonElement = driver.findElement(By.id("create-account"));
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("create-account")));
+		
+		WebElement submitButtonElement = driver.findElement(By.id("create-account"));
 		submitButtonElement.submit();
 	}
 
-	@Then("I get redirected to another page")
-	public void i_get_redirected_to_another_page() {
+	@Then("I get successfully redirected to the confirmation page")
+	public void i_get_successfully_redirected_to_the_confirmation_page() {
 		String currentUrl = driver.getCurrentUrl();
 
-		assertEquals(currentUrl.contains(urlSuccess), true);
-	}
+		if (currentUrl.contains(urlSuccess)) {
+			assertEquals(currentUrl.contains(urlSuccess), true);
 
-	@Then("I get a validation error that says that the username is too long")
-	public void i_get_a_validation_error_that_says_that_the_username_is_too_long() {
-		validationError = driver.findElement(By.className("invalid-error"));
+			return;
+		}
 
-		boolean hasValidationError = validationError.getText().equals("Enter a value less than 100 characters long");
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("email")));
 
-		assertEquals(hasValidationError, true);
-	}
-	
-	@Then("I get a validation error that says that the email is missing")
-	public void i_get_a_validation_error_that_says_that_the_email_is_missing() {
-		validationError = driver.findElement(By.className("invalid-error"));
+		WebElement emailElement = driver.findElement(By.id("email"));
+		
+		if (emailElement.getAttribute("value").length() == 0) {
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='email']/following-sibling::span[1][@class='invalid-error']")));
+			
+			WebElement emailEmptyValidationError = driver.findElement(By.xpath("//*[@id='email']/following-sibling::span[1][@class='invalid-error']"));
 
-		boolean hasValidationError = validationError.getText().equals("Please enter a value");
+			boolean hasEmailEmptyValidationError = emailEmptyValidationError.isDisplayed();
 
-		assertEquals(hasValidationError, true);
+			assertEquals(hasEmailEmptyValidationError, true);
+		}
+
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("new_username")));
+
+		WebElement usernameElement = driver.findElement(By.id("new_username"));
+		
+		if (usernameElement.getAttribute("value").length() > 100) {
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='new_username']/following-sibling::span[1][@class='invalid-error']")));
+			
+			WebElement usernameLongValidationError = driver.findElement(By.xpath("//*[@id='new_username']/following-sibling::span[1][@class='invalid-error']"));
+
+			boolean hasUsernameLongValidationError = usernameLongValidationError.isDisplayed();
+
+			assertEquals(hasUsernameLongValidationError, true);
+		}
+		
+		if (usernameElement.getAttribute("value") == "johndoe") {
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='new_username']/following-sibling::span[1][@class='invalid-error']")));
+			
+			WebElement usernameExistValidationError = driver.findElement(By.xpath("//*[@id='new_username']/following-sibling::span[1][@class='invalid-error']"));
+
+			boolean hasUsernameExistValidationError = usernameExistValidationError.isDisplayed();
+
+			assertEquals(hasUsernameExistValidationError, true);
+		}
 	}
 }
